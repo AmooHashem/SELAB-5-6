@@ -1,12 +1,12 @@
 # Create your views here.
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from .models import Ride
-from .serializers import RideSerializer
-from drf_yasg.utils import swagger_auto_schema
+from .serializers import RideSerializer, PositionSerializer, finish_ride
+from rest_framework.decorators import api_view
 
 
 class RideViewSet(ModelViewSet):
@@ -23,11 +23,11 @@ class RideViewSet(ModelViewSet):
         else:
             return Response({'message': 'wrong data'}, status.HTTP_400_BAD_REQUEST)
 
-
-@action(detail=True, methods=['post'])
-def finish_ride(self, request, pk=None):
-    print(pk)
-    content = {
-        'status': 'request was permitted'
-    }
-    return Response(content)
+    @action(detail=True, methods=['post'], serializer_class=PositionSerializer)
+    def finish_ride(self, request, pk=None):
+        position_serializer = PositionSerializer(data=request.data)
+        if position_serializer.is_valid():
+            finish_ride(pk, **position_serializer.data)
+            return Response({'message': 'ok'}, status.HTTP_200_OK)
+        else:
+            return Response({'message': 'wrong data'}, status.HTTP_400_BAD_REQUEST)

@@ -4,6 +4,11 @@ from .models import Ride, Profile, Bike
 from haversine import haversine, Unit
 
 
+class PositionSerializer(serializers.Serializer):
+    lat = serializers.IntegerField()
+    lon = serializers.IntegerField()
+
+
 class RideSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ride
@@ -33,3 +38,22 @@ class RideSerializer(serializers.ModelSerializer):
         profile.save()
 
         return ride
+
+
+def finish_ride(pk, lat, lon):
+    try:
+        ride = Ride.objects.get(id=pk)
+    except:
+        raise serializers.ValidationError(detail='ride does not exist')
+    if ride.status == 'FINISHED':
+        raise serializers.ValidationError(detail='ride is finished')
+    ride.rider.profile.status = 'AVAILABLE'
+    ride.rider.profile.save()
+    ride.bike.status = 'AVAILABLE'
+    ride.bike.location_lat = lat
+    ride.bike.location_lon = lon
+    ride.bike.save()
+    ride.end_location_lat = lat
+    ride.end_location_lon = lon
+    ride.status = 'FINISHED'
+    ride.save()

@@ -4,7 +4,8 @@ from rest_framework.routers import DefaultRouter
 from .views import RideViewSet
 
 router = DefaultRouter()
-urlpatterns = []
+urlpatterns = [
+]
 router.register('ride', RideViewSet, basename='ride')
 
 urlpatterns += router.urls

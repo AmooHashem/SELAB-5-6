@@ -3,30 +3,19 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+class RideView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def start_ride(self, request):
+        content = {
+            'status': 'request was permitted'
+        }
+        return Response(content)
 
-from haversine import haversine, Unit
-
-lyon = (45.7597, 4.8422)  # (lat, lon)
-paris = (48.8567, 2.3508)
-
-haversine(lyon, paris)
-# >> 392.2172595594006  # in kilometers
-
-haversine(lyon, paris, unit=Unit.MILES)
-# >> 243.71201856934454  # in miles
-
-# you can also use the string abbreviation for units:
-haversine(lyon, paris, unit='mi')
-# >> 243.71201856934454  # in miles
-
-haversine(lyon, paris, unit=Unit.NAUTICAL_MILES)
-# >> 211.78037755311516  # in nautical miles
-
-# start ride
-
-# finish ride
+    def finish_ride(self, request):
+        return Response("salam")

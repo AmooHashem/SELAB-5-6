@@ -1,8 +1,10 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from .views import start_ride, finish_ride
+from .views import RideViewSet
 
-urlpatterns = [
-    path('start_ride', start_ride, name='start ride'),
-    path('finish_ride', finish_ride, name='finish ride'),
-]
+router = DefaultRouter()
+urlpatterns = []
+router.register('ride', RideViewSet, basename='ride')
+
+urlpatterns += router.urls

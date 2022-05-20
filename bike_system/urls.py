@@ -25,9 +25,9 @@ schema_view = get_swagger_view(title='SELAB5-6 API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('swagger/', schema_view),
     path('api/core/', include('core.urls')),
     path('api/scoring/', include('scoring.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('swagger/', schema_view),
 ]

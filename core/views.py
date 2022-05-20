@@ -1,12 +1,12 @@
 # Create your views here.
-from rest_framework.decorators import action, permission_classes
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import status
+
 from .models import Ride
 from .serializers import RideSerializer, PositionSerializer, finish_ride
-from rest_framework.decorators import api_view
 
 
 class RideViewSet(ModelViewSet):

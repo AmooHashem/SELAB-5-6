@@ -47,12 +47,17 @@ def finish_ride(pk, lat, lon):
         raise serializers.ValidationError(detail='ride does not exist')
     if ride.status == 'FINISHED':
         raise serializers.ValidationError(detail='ride is finished')
+    
     ride.rider.profile.status = 'AVAILABLE'
+    ride.rider.profile.location_lat = lat
+    ride.rider.profile.location_lon = lon
     ride.rider.profile.save()
+
     ride.bike.status = 'AVAILABLE'
     ride.bike.location_lat = lat
     ride.bike.location_lon = lon
     ride.bike.save()
+
     ride.end_location_lat = lat
     ride.end_location_lon = lon
     ride.status = 'FINISHED'

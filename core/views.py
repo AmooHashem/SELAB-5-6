@@ -1,4 +1,5 @@
 # Create your views here.
+import requests
 from django.db.transaction import atomic
 from rest_framework import generics
 from rest_framework import status
@@ -43,7 +44,16 @@ class RideViewSet(ModelViewSet):
     def finish_ride(self, request, pk=None):
         position_serializer = PositionSerializer(data=request.data)
         if position_serializer.is_valid():
-            finish_ride(pk, **position_serializer.data)
-            return Response({'message': 'ok'}, status.HTTP_200_OK)
+            ride = finish_ride(pk, **position_serializer.data)
+            r = requests.post('http://127.0.0.1:8001/api/scoring/receipt/',
+                              data={
+                                  "distance": ride.get_distance(),
+                                  "user_id": ride.rider.id
+                              })
+            print(r.status_code)
+            if r.status_code == 200:
+                return Response({'message': 'ok'}, status.HTTP_200_OK)
+            else:
+                return Response({'message': 'error in creating receipt'}, status.HTTP_400_BAD_REQUEST)
         else:
             return Response({'message': 'wrong data'}, status.HTTP_400_BAD_REQUEST)

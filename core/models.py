@@ -4,6 +4,7 @@ from django.db import models
 
 from django.db import models
 from django.contrib.auth.models import User
+from haversine import haversine, Unit
 
 
 class Profile(models.Model):
@@ -55,3 +56,11 @@ class Ride(models.Model):
 
     def __str__(self):
         return f'{self.rider} - {self.bike}'
+
+    def get_distance(self):
+        if not self.start_location_lat or not self.start_location_lon or \
+                not self.end_location_lat or not self.end_location_lon:
+            return
+        else:
+            return haversine((self.start_location_lat, self.start_location_lon),
+                             (self.end_location_lat, self.end_location_lon), unit=Unit.METERS)

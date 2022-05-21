@@ -10,7 +10,6 @@ def create_rider(validated_data):
     return user
 
 
-# User serializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -92,3 +91,5 @@ def finish_ride(pk, lat, lon):
     ride.end_location_lon = lon
     ride.status = 'FINISHED'
     ride.save()
+
+    return ride

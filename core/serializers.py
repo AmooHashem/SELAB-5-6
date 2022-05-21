@@ -1,7 +1,37 @@
-from django.core.exceptions import ValidationError
-from rest_framework import serializers
-from .models import Ride, Profile, Bike
 from haversine import haversine, Unit
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Ride, Profile, Bike
+
+
+def create_rider(validated_data):
+    user = User(**validated_data).save()
+    Profile(user=user).save()
+    return user
+
+
+# User serializer
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ('user', 'location_lat', 'location_lon')
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data['user'])
+        Profile.objects.create(user=user, location_lat=validated_data['location_lat'],
+                               location_lon=validated_data['location_lon']).save()
+        return user
 
 
 class PositionSerializer(serializers.Serializer):
@@ -47,7 +77,7 @@ def finish_ride(pk, lat, lon):
         raise serializers.ValidationError(detail='ride does not exist')
     if ride.status == 'FINISHED':
         raise serializers.ValidationError(detail='ride is finished')
-    
+
     ride.rider.profile.status = 'AVAILABLE'
     ride.rider.profile.location_lat = lat
     ride.rider.profile.location_lon = lon

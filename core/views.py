@@ -1,4 +1,6 @@
 # Create your views here.
+import json
+
 import requests
 from django.db.transaction import atomic
 from rest_framework import generics
@@ -40,17 +42,22 @@ class RideViewSet(ModelViewSet):
         else:
             return Response({'message': 'wrong data'}, status.HTTP_400_BAD_REQUEST)
 
+    @atomic
     @action(detail=True, methods=['post'], serializer_class=PositionSerializer)
     def finish_ride(self, request, pk=None):
         position_serializer = PositionSerializer(data=request.data)
         if position_serializer.is_valid():
             ride = finish_ride(pk, **position_serializer.data)
-            r = requests.post('http://127.0.0.1:8001/api/scoring/receipt/',
-                              data={
-                                  "distance": ride.get_distance(),
-                                  "user_id": ride.rider.id
+
+            # request to another server to create the receipt of this ride and calculate the desired things:
+            r = requests.post('http://127.0.0.1:8003/api/scoring/receipt/',
+                              data=json.dumps({
+                                  "distance": int(ride.get_distance()),
+                                  "user_id": int(ride.rider.id),
+                              }),
+                              headers={
+                                  'content-type': 'application/json',
                               })
-            print(r.status_code)
             if r.status_code == 200:
                 return Response({'message': 'ok'}, status.HTTP_200_OK)
             else:

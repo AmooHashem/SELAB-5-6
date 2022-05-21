@@ -8,4 +8,4 @@ class Receipt(models.Model):
     datetime = models.DateTimeField()
 
     def __str__(self):
-        return f'{self.user_id} - {self.score}'
+        return f'user id: {self.user_id} - score: {self.score}'

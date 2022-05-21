@@ -10,7 +10,7 @@ from scoring.serializers import ReceiptSerializer
 
 class ReceiptApiView(ModelViewSet):
     serializer_class = ReceiptSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Receipt.objects.all()
 
     @atomic
@@ -18,7 +18,6 @@ class ReceiptApiView(ModelViewSet):
         submit_score_serializer = ReceiptSerializer(data=request.data)
         if submit_score_serializer.is_valid():
             async_create.delay(submit_score_serializer.data)
-            return Response('ok')
         else:
             return Response('error')
 

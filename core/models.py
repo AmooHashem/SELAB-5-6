@@ -20,7 +20,7 @@ class Profile(models.Model):
                               default="AVAILABLE")
 
     def __str__(self):
-        return f'{self.id}-{self.user.username}'
+        return f'{self.user.id}-{self.user.username}'
 
 
 class Bike(models.Model):
@@ -55,7 +55,7 @@ class Ride(models.Model):
     end_location_lon = models.FloatField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.rider} - {self.bike}'
+        return f'id: {self.id} - rider: {self.rider} - bike: {self.bike}'
 
     def get_distance(self):
         if not self.start_location_lat or not self.start_location_lon or \

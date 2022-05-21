@@ -6,6 +6,8 @@
 
 می‌توانید معماری پروژه را در تصویر زیر مشاهده کنید:
 
+![arch](https://user-images.githubusercontent.com/45389673/169655482-87eb9f21-0eb0-4ebf-bc36-22a0d65ab074.jpg)
+
 
 # نحوه نصب و راه‌ندازی پروژه 
 
@@ -26,21 +28,27 @@
 - `python3 manage.py createsuperuser`
 - `python3 manage.py runserver`
 
-## راه‌اندازی سرویس celery
-
-دستور زیر را اجرا کنید:
-
-- `celery -A bike_system worker --loglevel=INFO`
-
 ## راه‌اندازی سرویس RabbitMQ
 
 دستور زیر را اجرا کنید:
 
 - `docker-compose up`
 
+## راه‌اندازی سرویس celery
+
+دستور زیر را اجرا کنید:
+
+- `celery -A bike_system worker --loglevel=INFO`
+
+
+توجه کنید که ابتدا باید سرویس RabbitMQ و سپس سرویس celery را اجرا کنید. هم‌چنین در تصویر زیر، چگونگی ارتباط celery و RabbitMQ را مشاهده می‌کنید:
+
+![image](https://user-images.githubusercontent.com/45389673/169655518-530d238e-9beb-48dc-b43c-9764c79df8cf.png)
+
+
 # endpoints
 
-پس از اجرای پروژه‌ی جنگو، می‌توانید لیستی از endpoint ها را در آدرس `localhost:8080/swagger` مشاهده کنید.
+پس از اجرای پروژه‌ی جنگو، می‌توانید لیستی از endpoint ها را در آدرس `localhost:8000/swagger` مشاهده کنید.
 
 # منابع
 
